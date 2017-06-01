@@ -1,6 +1,9 @@
 package step.impvc;
 
-import java.net.URL;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import step.impvc.controllers.Controller;
 import step.impvc.models.Model;
 import step.impvc.views.View;
@@ -11,12 +14,22 @@ import step.impvc.views.View;
  */
 public class ClassResolver {
     
+    ClassPathScanner scanner;
     
+    public  ClassResolver() {
+        try {
+            this.scanner = new ClassPathScanner(this.getClass().getClassLoader().getResources(""));
+        } catch (IOException ex) {
+            Logger.getLogger(ClassResolver.class.getName()).log(Level.SEVERE, "ClassResolver constructor failed." , ex);
+        }
+    }
     
-    public String[] warmUp(){
-        URL resource = this.getClass().getClassLoader().getResource("");
-        
-        
+    public ClassPackageHierarchy warmUp(){
+        try {
+            return scanner.getClassPathFileNames();
+        } catch (IOException ex) {
+            Logger.getLogger(ClassResolver.class.getName()).log(Level.SEVERE, "exception during class resolver warm up", ex);
+        }
         return null;
     }
     

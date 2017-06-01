@@ -11,9 +11,13 @@ public class AppRun {
 
     public static void main(String[] args) {
         ClassResolver resolver = new ClassResolver();
-        Controller controller = resolver.resolveStartController();
         
-        controller.setView(DefaultView.getDefaultView());
+        
+        resolver.warmUp().show();
+        
+        //Controller controller = resolver.resolveStartController();
+        
+        //controller.setView(DefaultView.getDefaultView());
     }
     
 }
