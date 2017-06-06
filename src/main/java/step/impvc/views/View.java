@@ -7,5 +7,5 @@ package step.impvc.views;
 
 public interface View {
     void broadCastUserInteraction();
-    void show();
+    void show(Object obj);
 }

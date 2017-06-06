@@ -6,23 +6,20 @@ package step.impvc.views;
  */
 public abstract class DefaultView implements View{
 
-    public static View getDefaultView(){
-        return new DefaultView(){
-                @Override
-                public void show(){
-                    System.out.println("Hello World");
-                }
-            };
-    }
+    private String template;
     
     @Override
     public void broadCastUserInteraction() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    public void setTemplate(String template){
+        this.template = template;
+    }
+    
     @Override
-    public void show(){
-        
+    public void show(Object obj){
+        System.out.println(String.format(template, obj.toString()));
     }
     
 }

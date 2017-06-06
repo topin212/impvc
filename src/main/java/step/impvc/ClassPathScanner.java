@@ -18,6 +18,10 @@ public class ClassPathScanner {
     
     private Enumeration<URL> resourceRoots;
     private ClassPackageHierarchy classNames;
+
+    public ClassPackageHierarchy getClassNames() {
+        return classNames;
+    }
     
     public ClassPathScanner() {
     }
@@ -27,23 +31,47 @@ public class ClassPathScanner {
         this.classNames = new ClassPackageHierarchy();
     }
     
-    public ClassPackageHierarchy getClassPathFileNames() throws IOException{
+    public ClassPackageHierarchy getClassPathFileNames() throws IOException, ClassNotFoundException{
         
-        while(resourceRoots.hasMoreElements()){
-            URL resource = resourceRoots.nextElement();
+        URL resource;
+        do{
+            resource = resourceRoots.nextElement();
             Path localPath = fixPath(resource.toString());
             getFolderContents(localPath);
-        }
+        }while(resourceRoots.hasMoreElements());
+        
+        classNames.setDomainName(fixPath(resource.toString()).toString());
         return classNames;
     }
     
-    public void getFolderContents(Path folder) throws IOException{
+    //TODO requires heavy refactor
+    public void getFolderContents(Path folder) throws IOException, ClassNotFoundException{
         DirectoryStream<Path> stream = Files.newDirectoryStream(folder);
+        String folderPath = folder.toString();
+        String packageName = pathToPackageName(folderPath);
+        String className;
+        
+        
         for(Path file: stream){
-            classNames.addClass(pathToPackageName(folder.toString()),file.getFileName().toString());
+           className = refineClassName(file.getFileName().toString());
+            if(packageNameIsValid(packageName) && classNameIsValid(className)){
+                try{
+                    if(file.toFile().isFile())
+                        classNames.addClass(packageName,Class.forName(packageName + "." + className));
+                }catch(ClassNotFoundException ex){
+                    System.out.println("SEVERE");
+                    System.out.println("========================================");
+                    System.out.println("Class " + className + " cannot be found.");
+                    System.out.println("Package " + packageName);
+                    System.out.println(ex.getMessage());
+                    System.out.println("========================================");
+                    
+                }
+            } 
             if(file.toFile().isDirectory()){
                 getFolderContents(file);
             }
+            
         }
     }
     
@@ -66,5 +94,30 @@ public class ClassPathScanner {
             return m.group(1).replace("\\", ".");
         }
         return "";
+    }
+    
+    public String getInversedDomainNameFromPath(String path){        
+        Pattern p = Pattern.compile("\\\\classes\\\\([^\\\\]+\\\\[^\\\\]+)\\\\[^$]+$");
+        Matcher m = p.matcher(path);
+        
+        if(m.find())
+            return m.group(1);
+        return "";
+    }
+    
+    public String refineClassName(String className){
+        Pattern p = Pattern.compile("^([^\\.]+)");
+        Matcher m = p.matcher(className);
+        
+        if(m.find())
+            return m.group(1);
+        return "";
+    }
+    
+    public boolean classNameIsValid(String className){
+        return !className.contains("$");
+    }
+    public boolean packageNameIsValid(String packageName){
+        return !packageName.isEmpty();
     }
 }

@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import step.impvc.controllers.Controller;
 import step.impvc.models.Model;
+import step.impvc.reflection.Reflector;
 import step.impvc.views.View;
 
 /**
@@ -15,6 +16,8 @@ import step.impvc.views.View;
 public class ClassResolver {
     
     ClassPathScanner scanner;
+    Reflector reflector;
+    String controllerPackageName;
     
     public  ClassResolver() {
         try {
@@ -28,15 +31,16 @@ public class ClassResolver {
         try {
             return scanner.getClassPathFileNames();
         } catch (IOException ex) {
-            Logger.getLogger(ClassResolver.class.getName()).log(Level.SEVERE, "exception during class resolver warm up", ex);
+            Logger.getLogger(ClassResolver.class.getName()).log(Level.SEVERE, "exception during class resolver warm up.", ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ClassResolver.class.getName()).log(Level.SEVERE, "className was not valid", ex);
         }
         return null;
     }
     
     //TODO fill methods
-    public Controller[] resolveControllers(String targetPackage){
-        
-        return null;
+    public List<Class> resolveControllers(String targetPackage){
+        return scanner.getClassNames().getClassesInPackage(targetPackage);
     }
     
     public Controller resolveStartController(){
@@ -59,5 +63,9 @@ public class ClassResolver {
     
     public Model resolveModel(String className){
         return null;
+    }
+    
+    public void setControllerPackage(String packageName){
+        this.controllerPackageName = packageName;
     }
 }

@@ -12,37 +12,53 @@ import java.util.Map;
  */
 public class ClassPackageHierarchy {
 
-    private Map<String, List<String>> map;
+    private Map<String, List<Class>> resourceMap;
+    private String domainName;
     
     ClassPackageHierarchy(){
-    map = new HashMap<>();
+        resourceMap = new HashMap<>();
     }
     
     
-    public void addClass(String packageName, final String className){
-        if(map.containsKey(packageName)){
-            map.get(packageName).add(className);
+    public void addClass(String packageName, final Class className){
+        if(resourceMap.containsKey(packageName)){
+            resourceMap.get(packageName).add(className);
         }else{
-            map.put(packageName, new ArrayList(){{add(className);}});
+            resourceMap.put(packageName, new ArrayList(){{add(className);}});
         }
     }
     
-    public List<String> getClassesInPackage(String packageName){
-        return map.get(packageName);
+    public void setDomainName(String domainName){
+        this.domainName = domainName;
     }
     
-    public Map<String, List<String>> getClassHierarchy(){
-        return map;
+    public String getDomainName(){
+        return this.domainName;
     }
     
+    public List<Class> getClassesInPackage(String packageName){
+        return resourceMap.get(packageName);
+    }
+    
+    public Map<String, List<Class>> getClassHierarchy(){
+        return resourceMap;
+    }
+    
+   
     @Deprecated
     public void show(){
-        Iterator<Map.Entry<String, List<String>>> iterator = map.entrySet().iterator();
+        Iterator<Map.Entry<String, List<Class>>> iterator = resourceMap.entrySet().iterator();
         
         while(iterator.hasNext()){
-            Map.Entry<String, List<String>> next = iterator.next();
+            Map.Entry<String, List<Class>> next = iterator.next();
             System.out.println(next.getKey());
-            System.out.println(next.getValue());
+            //System.out.println(next.getValue());
+            System.out.print("[ ");
+            for(Class elClasso : next.getValue()){
+                System.out.print(elClasso.getName() + " ");
+            }
+            System.out.print("]");
+            System.out.println("");
         }
     }
     
