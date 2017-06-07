@@ -39,7 +39,7 @@ public class ClassPackageHierarchy {
     public List<Class> getClassesInPackage(String packageName){
         return resourceMap.get(packageName);
     }
-    
+        
     public Map<String, List<Class>> getClassHierarchy(){
         return resourceMap;
     }

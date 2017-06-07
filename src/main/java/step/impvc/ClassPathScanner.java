@@ -45,12 +45,11 @@ public class ClassPathScanner {
     }
     
     //TODO requires heavy refactor
-    public void getFolderContents(Path folder) throws IOException, ClassNotFoundException{
+    public void getFolderContents(Path folder) throws IOException{
         DirectoryStream<Path> stream = Files.newDirectoryStream(folder);
         String folderPath = folder.toString();
         String packageName = pathToPackageName(folderPath);
         String className;
-        
         
         for(Path file: stream){
            className = refineClassName(file.getFileName().toString());
@@ -71,7 +70,6 @@ public class ClassPathScanner {
             if(file.toFile().isDirectory()){
                 getFolderContents(file);
             }
-            
         }
     }
     

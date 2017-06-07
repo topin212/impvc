@@ -1,10 +1,5 @@
 package step.impvc;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import step.impvc.controllers.Controller;
-import step.impvc.reflection.Reflector;
-
 
 /**
  *
@@ -20,18 +15,13 @@ public class AppRun {
         
         ControllerContainer container = new ControllerContainer();
         
+        container.setController(resolver.resolveStartController());
         
-       
+        //TODO use some sort of app run
         
         
         //Controller controller = resolver.resolveStartController();
         //controller.setView(DefaultView.getDefaultView());
-        
-        
-        
-            //Controller controller = resolver.resolveStartController();
-            
-            //controller.setView(DefaultView.getDefaultView());
     }
     
 }
